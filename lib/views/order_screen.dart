@@ -1,10 +1,11 @@
+// Écran 2 : Formulaire de commande
+// L'utilisateur remplit les détails de sa livraison et voit le prix calculé
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../l10n/app_localizations.dart';
+import 'package:lhagli/l10n/app_localizations.dart';
 import '../controllers/order_provider.dart';
 import '../utils/constants.dart';
-import 'admin_screen.dart';
-import 'register_screen.dart';
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
@@ -15,68 +16,56 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _locationController = TextEditingController();
-  final _weightController = TextEditingController(text: '100');
-
-  String _selectedVehicle = 'Car';
-  double _weight = 100.0;
-
-  @override
-  void initState() {
-    super.initState();
-    _weightController.addListener(_onWeightTextChanged);
-  }
+  final _weightController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
-    _weightController.removeListener(_onWeightTextChanged);
     _weightController.dispose();
-    _locationController.dispose();
     super.dispose();
   }
 
-  void _onWeightTextChanged() {
-    final val = double.tryParse(_weightController.text);
-    if (val != null && val != _weight) {
-      setState(() {
-        _weight = val.clamp(1.0, 10000.0);
-      });
-    }
-  }
+  Future<void> _onConfirmOrder() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  Future<void> _submitOrder() async {
-    if (_formKey.currentState!.validate()) {
-      final provider = context.read<OrderProvider>();
-      final success = await provider.placeOrder(
-        location: _locationController.text.trim(),
-        vehicle: _selectedVehicle,
-        weight: _weight,
+    final l10n = AppLocalizations.of(context)!;
+    final provider = context.read<OrderProvider>();
+
+    if (provider.departure == provider.destination &&
+        provider.departure != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.sameCityError),
+          backgroundColor: AppColors.error,
+        ),
       );
+      return;
+    }
 
+    setState(() => _isLoading = true);
+
+    try {
+      await provider.confirmOrder();
       if (mounted) {
-        if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.orderSuccess),
-              backgroundColor: AppConstants.accentColor,
-            ),
-          );
-          // Reset form inputs except destination if needed, let's just clear
-          _locationController.clear();
-          setState(() {
-            _weight = 100.0;
-            _weightController.text = '100';
-            _selectedVehicle = 'Car';
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to submit request. Please try again.'),
-              backgroundColor: Colors.redAccent,
-            ),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.orderConfirmed),
+            backgroundColor: AppColors.success,
+          ),
+        );
+        Navigator.of(context).pop();
       }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.errorMessage),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -85,357 +74,420 @@ class _OrderScreenState extends State<OrderScreen> {
     final l10n = AppLocalizations.of(context)!;
     final provider = context.watch<OrderProvider>();
 
-    // Redirect if somehow accessed without registering
-    if (!provider.isRegistered) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const RegisterScreen()),
-        );
-      });
-      return const SizedBox();
-    }
-
-    final double price = provider.calculatePrice(_selectedVehicle, _weight);
-
     return Scaffold(
-      backgroundColor: AppConstants.backgroundColor,
+      backgroundColor: AppColors.lightGrey,
       appBar: AppBar(
+        backgroundColor: AppColors.darkBlue,
+        centerTitle: true,
         title: Text(
-          l10n.appTitle,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: AppConstants.textPrimary),
+          l10n.newOrder,
+          style: const TextStyle(
+            color: AppColors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.white),
         actions: [
           IconButton(
-            icon: const Icon(Icons.admin_panel_settings, color: AppConstants.primaryColor),
-            tooltip: l10n.adminPanelButton,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AdminScreen()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.redAccent),
-            onPressed: () {
-              provider.logout();
-            },
+            icon: const Icon(Icons.language, color: AppColors.white),
+            tooltip: 'FR / EN',
+            onPressed: () => provider.toggleLanguage(),
           ),
         ],
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppConstants.backgroundGradient,
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Welcome banner
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: AppConstants.primaryColor.withAlpha(51),
-                        child: const Icon(Icons.person, color: AppConstants.primaryColor),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.clientName(provider.currentUser!.name),
-                            style: const TextStyle(
-                              color: AppConstants.textPrimary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            provider.currentUser!.phone,
-                            style: const TextStyle(
-                              color: AppConstants.textSecondary,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-
-                  Text(
-                    l10n.createOrderTitle,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: AppConstants.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Location Input Card
-                  _buildSectionCard(
-                    child: TextFormField(
-                      controller: _locationController,
-                      style: const TextStyle(color: AppConstants.textPrimary),
-                      decoration: InputDecoration(
-                        labelText: l10n.locationLabel,
-                        labelStyle: const TextStyle(color: AppConstants.textSecondary),
-                        prefixIcon: const Icon(Icons.pin_drop_outlined, color: AppConstants.primaryColor),
-                        border: InputBorder.none,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return l10n.locationError;
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Vehicle Selector Header
-                  Text(
-                    l10n.vehicleLabel,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppConstants.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Vehicle Selector Cards Row
-                  SizedBox(
-                    height: 110,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: AppConstants.vehicleBaseRates.keys.map((vehicle) {
-                        final isSelected = _selectedVehicle == vehicle;
-                        IconData icon;
-                        switch (vehicle) {
-                          case 'Car':
-                            icon = Icons.directions_car_rounded;
-                            break;
-                          case 'Van':
-                            icon = Icons.airport_shuttle_rounded;
-                            break;
-                          case 'Truck':
-                            icon = Icons.local_shipping_rounded;
-                            break;
-                          default:
-                            icon = Icons.fire_truck_rounded;
-                        }
-
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _selectedVehicle = vehicle;
-                            });
-                          },
-                          child: Container(
-                            width: 105,
-                            margin: const EdgeInsets.only(right: 12),
-                            decoration: BoxDecoration(
-                              color: isSelected ? AppConstants.primaryColor : AppConstants.cardColor,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: isSelected ? Colors.transparent : Colors.white10,
-                              ),
-                              boxShadow: isSelected
-                                  ? [
-                                      BoxShadow(
-                                        color: AppConstants.primaryColor.withAlpha(102),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
-                                      )
-                                    ]
-                                  : null,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  icon,
-                                  color: isSelected ? Colors.white : AppConstants.primaryColor,
-                                  size: 32,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  vehicle,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                    color: isSelected ? Colors.white : AppConstants.textPrimary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Weight Control Card
-                  Text(
-                    l10n.weightLabel,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppConstants.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  _buildSectionCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.scale, color: AppConstants.primaryColor),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                l10n.weightDisplay(_weight.round()),
-                                style: const TextStyle(
-                                  color: AppConstants.textPrimary,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 80,
-                              height: 36,
-                              child: TextField(
-                                controller: _weightController,
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: AppConstants.textPrimary, fontSize: 14),
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 4),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.white10),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: AppConstants.primaryColor),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.black26,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            activeTrackColor: AppConstants.primaryColor,
-                            inactiveTrackColor: Colors.white10,
-                            thumbColor: Colors.white,
-                            overlayColor: AppConstants.primaryColor.withAlpha(51),
-                          ),
-                          child: Slider(
-                            value: _weight,
-                            min: 1.0,
-                            max: 2000.0,
-                            onChanged: (val) {
-                              setState(() {
-                                _weight = val;
-                                _weightController.text = val.round().toString();
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Real-time Pricing Summary Card (Dynamic Pricing display)
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [AppConstants.cardColor, AppConstants.primaryColor.withAlpha(26)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppConstants.primaryColor.withAlpha(51)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l10n.calculatedPrice,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: AppConstants.textSecondary,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${price.toStringAsFixed(2)} ${l10n.currency}',
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: AppConstants.accentColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                        provider.isLoading
-                            ? const CircularProgressIndicator(color: AppConstants.primaryColor)
-                            : ElevatedButton.icon(
-                                onPressed: _submitOrder,
-                                icon: const Icon(Icons.send_rounded, size: 18),
-                                label: Text(l10n.placeOrderButton),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppConstants.primaryColor,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildClientHeader(provider),
+              const SizedBox(height: 16),
+              _buildLocationCard(l10n, provider),
+              const SizedBox(height: 16),
+              _buildVehicleCard(l10n, provider),
+              const SizedBox(height: 16),
+              _buildWeightCard(l10n, provider),
+              const SizedBox(height: 16),
+              _buildPriceCard(l10n, provider),
+              const SizedBox(height: 24),
+              _buildActionButtons(l10n),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildSectionCard({required Widget child}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppConstants.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
+  Widget _buildClientHeader(OrderProvider provider) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: AppColors.darkBlue,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            const Icon(Icons.person, color: AppColors.orange, size: 28),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  provider.currentUser?.name ?? '',
+                  style: const TextStyle(
+                    color: AppColors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  provider.currentUser?.phone ?? '',
+                  style: const TextStyle(color: AppColors.grey, fontSize: 14),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-      child: child,
+    );
+  }
+
+  Widget _buildLocationCard(AppLocalizations l10n, OrderProvider provider) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.route, color: AppColors.darkBlue),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.trip,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: AppColors.darkBlue,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _buildCityDropdown(
+              label: l10n.departure,
+              icon: Icons.flight_takeoff,
+              value: provider.departure,
+              onChanged: (city) => provider.setDeparture(city),
+              l10n: l10n,
+            ),
+            const SizedBox(height: 12),
+            const Center(
+              child: Icon(Icons.arrow_downward, color: AppColors.orange, size: 28),
+            ),
+            const SizedBox(height: 12),
+            _buildCityDropdown(
+              label: l10n.destination,
+              icon: Icons.flight_land,
+              value: provider.destination,
+              onChanged: (city) => provider.setDestination(city),
+              l10n: l10n,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCityDropdown({
+    required String label,
+    required IconData icon,
+    required String? value,
+    required ValueChanged<String?> onChanged,
+    required AppLocalizations l10n,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: AppColors.grey),
+        prefixIcon: Icon(icon, color: AppColors.darkBlue),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.darkBlue, width: 2),
+        ),
+        filled: true,
+        fillColor: AppColors.white,
+      ),
+      hint: Text(l10n.selectCity),
+      items: mauritanianCities
+          .map((city) => DropdownMenuItem(value: city, child: Text(city)))
+          .toList(),
+      onChanged: onChanged,
+      validator: (val) => val == null ? l10n.fieldRequired : null,
+    );
+  }
+
+  Widget _buildVehicleCard(AppLocalizations l10n, OrderProvider provider) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.directions_car, color: AppColors.darkBlue),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.vehicleType,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: AppColors.darkBlue,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildVehicleOption(
+                    label: l10n.car,
+                    icon: Icons.directions_car,
+                    value: 'car',
+                    groupValue: provider.vehicleType,
+                    onChanged: (v) => provider.setVehicleType(v!),
+                    subtitle: '80 MRU/km\n+ 15 MRU/kg',
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildVehicleOption(
+                    label: l10n.airplane,
+                    icon: Icons.airplanemode_active,
+                    value: 'airplane',
+                    groupValue: provider.vehicleType,
+                    onChanged: (v) => provider.setVehicleType(v!),
+                    subtitle: '150 MRU/km\n+ 50 MRU/kg',
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVehicleOption({
+    required String label,
+    required IconData icon,
+    required String value,
+    required String groupValue,
+    required ValueChanged<String?> onChanged,
+    required String subtitle,
+  }) {
+    final bool isSelected = value == groupValue;
+    return GestureDetector(
+      onTap: () => onChanged(value),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.darkBlue.withOpacity(0.1)
+              : AppColors.white,
+          border: Border.all(
+            color: isSelected ? AppColors.darkBlue : AppColors.grey,
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 40,
+                color: isSelected ? AppColors.darkBlue : AppColors.grey),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isSelected ? AppColors.darkBlue : AppColors.grey,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(subtitle,
+                style: const TextStyle(fontSize: 11, color: AppColors.grey),
+                textAlign: TextAlign.center),
+            Radio<String>(
+              value: value,
+              groupValue: groupValue,
+              onChanged: onChanged,
+              activeColor: AppColors.darkBlue,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWeightCard(AppLocalizations l10n, OrderProvider provider) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.scale, color: AppColors.darkBlue),
+                const SizedBox(width: 8),
+                Text(l10n.weight,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppColors.darkBlue,
+                    )),
+              ],
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _weightController,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: l10n.weight,
+                labelStyle: const TextStyle(color: AppColors.grey),
+                prefixIcon:
+                    const Icon(Icons.scale, color: AppColors.darkBlue),
+                suffixText: 'kg',
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      const BorderSide(color: AppColors.darkBlue, width: 2),
+                ),
+                filled: true,
+                fillColor: AppColors.white,
+              ),
+              onChanged: (value) {
+                final double weight = double.tryParse(value) ?? 0.0;
+                provider.setWeight(weight);
+              },
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return l10n.fieldRequired;
+                }
+                final double? weight = double.tryParse(value);
+                if (weight == null || weight <= 0) return l10n.weightInvalid;
+                return null;
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPriceCard(AppLocalizations l10n, OrderProvider provider) {
+    final double price = provider.calculatedPrice;
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: AppColors.darkBlue,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.calculate, color: AppColors.orange, size: 28),
+                const SizedBox(width: 12),
+                Text(l10n.estimatedPrice,
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    )),
+              ],
+            ),
+            Text(
+              price > 0 ? '${price.toStringAsFixed(0)} MRU' : '-- MRU',
+              style: const TextStyle(
+                color: AppColors.orange,
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ElevatedButton.icon(
+          onPressed: _isLoading ? null : _onConfirmOrder,
+          icon: _isLoading
+              ? const SizedBox(
+                  width: 20, height: 20,
+                  child: CircularProgressIndicator(
+                    color: AppColors.white, strokeWidth: 2))
+              : const Icon(Icons.check_circle),
+          label: Text(l10n.confirmOrder),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.orange,
+            foregroundColor: AppColors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+            elevation: 4,
+            shadowColor: AppColors.orange.withOpacity(0.4),
+            textStyle: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: _isLoading
+              ? null
+              : () {
+                  setState(() { _weightController.clear(); });
+                  context.read<OrderProvider>().setDeparture(null);
+                  context.read<OrderProvider>().setDestination(null);
+                  context.read<OrderProvider>().setWeight(0.0);
+                  context.read<OrderProvider>().setVehicleType('car');
+                },
+          icon: const Icon(Icons.edit),
+          label: Text(l10n.editOrder),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.darkBlue,
+            side: const BorderSide(color: AppColors.darkBlue, width: 2),
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+            textStyle: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(height: 24),
+      ],
     );
   }
 }

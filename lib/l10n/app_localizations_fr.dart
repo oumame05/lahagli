@@ -9,88 +9,138 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appTitle => 'Lahagli Cargo';
+  String get appTitle => 'LHAGLI';
 
   @override
-  String get registerTitle => 'Créer un Profil';
+  String get appSubtitle => 'Service de livraison en Mauritanie';
 
   @override
-  String get registerSubtitle =>
-      'Saisissez votre nom et votre numéro de téléphone pour commencer à commander.';
+  String get fullName => 'Nom complet';
 
   @override
-  String get nameLabel => 'Nom Complet';
+  String get phoneNumber => 'Numéro de téléphone';
 
   @override
-  String get nameError => 'Veuillez entrer votre nom';
+  String get continueButton => 'Continuer';
 
   @override
-  String get phoneLabel => 'Numéro de Téléphone';
+  String get fieldRequired => 'Ce champ est obligatoire';
 
   @override
-  String get phoneError => 'Veuillez entrer un numéro de téléphone valide';
+  String get phoneInvalid => 'Numéro invalide (8 chiffres minimum)';
 
   @override
-  String get registerButton => 'S\'enregistrer & Continuer';
+  String get departure => 'Lieu de départ';
 
   @override
-  String get createOrderTitle => 'Nouvelle Demande de Transport';
+  String get destination => 'Lieu d\'arrivée';
 
   @override
-  String get locationLabel => 'Lieu de Destination';
+  String get vehicleType => 'Type de véhicule';
 
   @override
-  String get locationError => 'Veuillez entrer le lieu de destination';
+  String get car => 'Voiture';
 
   @override
-  String get vehicleLabel => 'Type de Véhicule';
+  String get airplane => 'Avion';
 
   @override
-  String get weightLabel => 'Poids (kg)';
+  String get weight => 'Poids du colis (kg)';
 
   @override
-  String get calculatedPrice => 'Prix Estimé';
+  String get weightInvalid => 'Entrez un poids valide';
 
   @override
-  String get currency => 'MRU';
+  String get estimatedPrice => 'Prix estimé';
 
   @override
-  String get placeOrderButton => 'Soumettre la Demande';
+  String get confirmOrder => 'Confirmer la commande';
 
   @override
-  String get adminPanelButton => 'Panneau d\'Administration';
+  String get editOrder => 'Modifier';
 
   @override
-  String get orderSuccess => 'Demande soumise avec succès !';
+  String get adminPanel => 'Panneau Administrateur';
 
   @override
-  String get adminTitle => 'Toutes les Demandes';
+  String get noOrders => 'Aucune commande pour le moment';
 
   @override
-  String get deleteTooltip => 'Supprimer la commande';
+  String get call => 'Appeler';
 
   @override
-  String get callTooltip => 'Appeler le client';
+  String get delete => 'Supprimer';
 
   @override
-  String get noOrders => 'Aucune demande de transport enregistrée.';
+  String get updateStatus => 'Modifier le statut';
 
   @override
-  String weightDisplay(num weight) {
-    final intl.NumberFormat weightNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
-    final String weightString = weightNumberFormat.format(weight);
-
-    return '$weightString kg';
-  }
+  String get statusPending => 'En attente';
 
   @override
-  String clientName(String name) {
-    return 'Client : $name';
-  }
+  String get statusInProgress => 'En cours';
 
   @override
-  String clientPhone(String phone) {
-    return 'Téléphone : $phone';
-  }
+  String get statusDelivered => 'Livré';
+
+  @override
+  String get orderConfirmed => 'Commande confirmée avec succès !';
+
+  @override
+  String get orderDeleted => 'Commande supprimée';
+
+  @override
+  String get errorMessage => 'Une erreur est survenue';
+
+  @override
+  String get selectCity => 'Sélectionner une ville';
+
+  @override
+  String get sameCityError => 'Départ et arrivée doivent être différents';
+
+  @override
+  String get register => 'Inscription';
+
+  @override
+  String get newOrder => 'Nouvelle commande';
+
+  @override
+  String get client => 'Client';
+
+  @override
+  String get trip => 'Trajet';
+
+  @override
+  String get vehicle => 'Véhicule';
+
+  @override
+  String get price => 'Prix';
+
+  @override
+  String get status => 'Statut';
+
+  @override
+  String get confirmDelete => 'Confirmer la suppression';
+
+  @override
+  String get confirmDeleteMessage =>
+      'Voulez-vous vraiment supprimer cette commande ?';
+
+  @override
+  String get cancel => 'Annuler';
+
+  @override
+  String get confirm => 'Confirmer';
+
+  @override
+  String get chooseStatus => 'Choisir un statut';
+
+  @override
+  String get mru => 'MRU';
+
+  @override
+  String get kg => 'kg';
+
+  @override
+  String get km => 'km';
 }

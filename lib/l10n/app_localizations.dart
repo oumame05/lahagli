@@ -63,7 +63,7 @@ import 'app_localizations_fr.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -86,167 +86,287 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('fr'),
+    Locale('fr')
   ];
 
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Lahagli Cargo'**
+  /// **'LHAGLI'**
   String get appTitle;
 
-  /// No description provided for @registerTitle.
+  /// No description provided for @appSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Create Profile'**
-  String get registerTitle;
+  /// **'Delivery Service in Mauritania'**
+  String get appSubtitle;
 
-  /// No description provided for @registerSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your name and phone number to start ordering transport services.'**
-  String get registerSubtitle;
-
-  /// No description provided for @nameLabel.
+  /// No description provided for @fullName.
   ///
   /// In en, this message translates to:
   /// **'Full Name'**
-  String get nameLabel;
+  String get fullName;
 
-  /// No description provided for @nameError.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter your name'**
-  String get nameError;
-
-  /// No description provided for @phoneLabel.
+  /// No description provided for @phoneNumber.
   ///
   /// In en, this message translates to:
   /// **'Phone Number'**
-  String get phoneLabel;
+  String get phoneNumber;
 
-  /// No description provided for @phoneError.
+  /// No description provided for @continueButton.
   ///
   /// In en, this message translates to:
-  /// **'Please enter a valid phone number'**
-  String get phoneError;
+  /// **'Continue'**
+  String get continueButton;
 
-  /// No description provided for @registerButton.
+  /// No description provided for @fieldRequired.
   ///
   /// In en, this message translates to:
-  /// **'Register & Continue'**
-  String get registerButton;
+  /// **'This field is required'**
+  String get fieldRequired;
 
-  /// No description provided for @createOrderTitle.
+  /// No description provided for @phoneInvalid.
   ///
   /// In en, this message translates to:
-  /// **'New Transport Request'**
-  String get createOrderTitle;
+  /// **'Invalid number (minimum 8 digits)'**
+  String get phoneInvalid;
 
-  /// No description provided for @locationLabel.
+  /// No description provided for @departure.
   ///
   /// In en, this message translates to:
-  /// **'Destination Location'**
-  String get locationLabel;
+  /// **'Departure'**
+  String get departure;
 
-  /// No description provided for @locationError.
+  /// No description provided for @destination.
   ///
   /// In en, this message translates to:
-  /// **'Please enter location'**
-  String get locationError;
+  /// **'Destination'**
+  String get destination;
 
-  /// No description provided for @vehicleLabel.
+  /// No description provided for @vehicleType.
   ///
   /// In en, this message translates to:
   /// **'Vehicle Type'**
-  String get vehicleLabel;
+  String get vehicleType;
 
-  /// No description provided for @weightLabel.
+  /// No description provided for @car.
   ///
   /// In en, this message translates to:
-  /// **'Weight (kg)'**
-  String get weightLabel;
+  /// **'Car'**
+  String get car;
 
-  /// No description provided for @calculatedPrice.
+  /// No description provided for @airplane.
+  ///
+  /// In en, this message translates to:
+  /// **'Airplane'**
+  String get airplane;
+
+  /// No description provided for @weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Package Weight (kg)'**
+  String get weight;
+
+  /// No description provided for @weightInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid weight'**
+  String get weightInvalid;
+
+  /// No description provided for @estimatedPrice.
   ///
   /// In en, this message translates to:
   /// **'Estimated Price'**
-  String get calculatedPrice;
+  String get estimatedPrice;
 
-  /// No description provided for @currency.
+  /// No description provided for @confirmOrder.
   ///
   /// In en, this message translates to:
-  /// **'MRU'**
-  String get currency;
+  /// **'Confirm Order'**
+  String get confirmOrder;
 
-  /// No description provided for @placeOrderButton.
+  /// No description provided for @editOrder.
   ///
   /// In en, this message translates to:
-  /// **'Submit Request'**
-  String get placeOrderButton;
+  /// **'Edit'**
+  String get editOrder;
 
-  /// No description provided for @adminPanelButton.
+  /// No description provided for @adminPanel.
   ///
   /// In en, this message translates to:
   /// **'Admin Panel'**
-  String get adminPanelButton;
-
-  /// No description provided for @orderSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Order submitted successfully!'**
-  String get orderSuccess;
-
-  /// No description provided for @adminTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'All Cargo Orders'**
-  String get adminTitle;
-
-  /// No description provided for @deleteTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete order'**
-  String get deleteTooltip;
-
-  /// No description provided for @callTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Call client'**
-  String get callTooltip;
+  String get adminPanel;
 
   /// No description provided for @noOrders.
   ///
   /// In en, this message translates to:
-  /// **'No cargo requests placed yet.'**
+  /// **'No orders yet'**
   String get noOrders;
 
-  /// No description provided for @weightDisplay.
+  /// No description provided for @call.
   ///
   /// In en, this message translates to:
-  /// **'{weight} kg'**
-  String weightDisplay(num weight);
+  /// **'Call'**
+  String get call;
 
-  /// No description provided for @clientName.
+  /// No description provided for @delete.
   ///
   /// In en, this message translates to:
-  /// **'Client: {name}'**
-  String clientName(String name);
+  /// **'Delete'**
+  String get delete;
 
-  /// No description provided for @clientPhone.
+  /// No description provided for @updateStatus.
   ///
   /// In en, this message translates to:
-  /// **'Phone: {phone}'**
-  String clientPhone(String phone);
+  /// **'Update Status'**
+  String get updateStatus;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @statusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get statusInProgress;
+
+  /// No description provided for @statusDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get statusDelivered;
+
+  /// No description provided for @orderConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Order confirmed successfully!'**
+  String get orderConfirmed;
+
+  /// No description provided for @orderDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Order deleted'**
+  String get orderDeleted;
+
+  /// No description provided for @errorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get errorMessage;
+
+  /// No description provided for @selectCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a city'**
+  String get selectCity;
+
+  /// No description provided for @sameCityError.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure and destination must be different'**
+  String get sameCityError;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration'**
+  String get register;
+
+  /// No description provided for @newOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'New Order'**
+  String get newOrder;
+
+  /// No description provided for @client.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get client;
+
+  /// No description provided for @trip.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip'**
+  String get trip;
+
+  /// No description provided for @vehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle'**
+  String get vehicle;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Deletion'**
+  String get confirmDelete;
+
+  /// No description provided for @confirmDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this order?'**
+  String get confirmDeleteMessage;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @chooseStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a status'**
+  String get chooseStatus;
+
+  /// No description provided for @mru.
+  ///
+  /// In en, this message translates to:
+  /// **'MRU'**
+  String get mru;
+
+  /// No description provided for @kg.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get kg;
+
+  /// No description provided for @km.
+  ///
+  /// In en, this message translates to:
+  /// **'km'**
+  String get km;
 }
 
 class _AppLocalizationsDelegate
@@ -276,9 +396,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
-  );
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

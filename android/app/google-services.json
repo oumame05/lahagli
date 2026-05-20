@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "258603754977",
+    "project_id": "lhagli",
+    "storage_bucket": "lhagli.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258603754977:android:c0255a1f1e7aa9ad4d1ea0",
+        "android_client_info": {
+          "package_name": "com.lhagli.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2zsUC2eVlSbJJGvPodTEhKB9m05BK8dY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

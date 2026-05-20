@@ -1,50 +1,48 @@
 {
   "@@locale": "en",
-  "appTitle": "Lahagli Cargo",
-  "registerTitle": "Create Profile",
-  "registerSubtitle": "Enter your name and phone number to start ordering transport services.",
-  "nameLabel": "Full Name",
-  "nameError": "Please enter your name",
-  "phoneLabel": "Phone Number",
-  "phoneError": "Please enter a valid phone number",
-  "registerButton": "Register & Continue",
-  "createOrderTitle": "New Transport Request",
-  "locationLabel": "Destination Location",
-  "locationError": "Please enter location",
-  "vehicleLabel": "Vehicle Type",
-  "weightLabel": "Weight (kg)",
-  "calculatedPrice": "Estimated Price",
-  "currency": "MRU",
-  "placeOrderButton": "Submit Request",
-  "adminPanelButton": "Admin Panel",
-  "orderSuccess": "Order submitted successfully!",
-  "adminTitle": "All Cargo Orders",
-  "deleteTooltip": "Delete order",
-  "callTooltip": "Call client",
-  "noOrders": "No cargo requests placed yet.",
-  "weightDisplay": "{weight} kg",
-  "@weightDisplay": {
-    "placeholders": {
-      "weight": {
-        "type": "num",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "clientName": "Client: {name}",
-  "@clientName": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "clientPhone": "Phone: {phone}",
-  "@clientPhone": {
-    "placeholders": {
-      "phone": {
-        "type": "String"
-      }
-    }
-  }
+  "appTitle": "LHAGLI",
+  "appSubtitle": "Delivery Service in Mauritania",
+  "fullName": "Full Name",
+  "phoneNumber": "Phone Number",
+  "continueButton": "Continue",
+  "fieldRequired": "This field is required",
+  "phoneInvalid": "Invalid number (minimum 8 digits)",
+  "departure": "Departure",
+  "destination": "Destination",
+  "vehicleType": "Vehicle Type",
+  "car": "Car",
+  "airplane": "Airplane",
+  "weight": "Package Weight (kg)",
+  "weightInvalid": "Enter a valid weight",
+  "estimatedPrice": "Estimated Price",
+  "confirmOrder": "Confirm Order",
+  "editOrder": "Edit",
+  "adminPanel": "Admin Panel",
+  "noOrders": "No orders yet",
+  "call": "Call",
+  "delete": "Delete",
+  "updateStatus": "Update Status",
+  "statusPending": "Pending",
+  "statusInProgress": "In Progress",
+  "statusDelivered": "Delivered",
+  "orderConfirmed": "Order confirmed successfully!",
+  "orderDeleted": "Order deleted",
+  "errorMessage": "An error occurred",
+  "selectCity": "Select a city",
+  "sameCityError": "Departure and destination must be different",
+  "register": "Registration",
+  "newOrder": "New Order",
+  "client": "Client",
+  "trip": "Trip",
+  "vehicle": "Vehicle",
+  "price": "Price",
+  "status": "Status",
+  "confirmDelete": "Confirm Deletion",
+  "confirmDeleteMessage": "Are you sure you want to delete this order?",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "chooseStatus": "Choose a status",
+  "mru": "MRU",
+  "kg": "kg",
+  "km": "km"
 }

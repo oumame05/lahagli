@@ -9,88 +9,138 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Lahagli Cargo';
+  String get appTitle => 'LHAGLI';
 
   @override
-  String get registerTitle => 'Create Profile';
+  String get appSubtitle => 'Delivery Service in Mauritania';
 
   @override
-  String get registerSubtitle =>
-      'Enter your name and phone number to start ordering transport services.';
+  String get fullName => 'Full Name';
 
   @override
-  String get nameLabel => 'Full Name';
+  String get phoneNumber => 'Phone Number';
 
   @override
-  String get nameError => 'Please enter your name';
+  String get continueButton => 'Continue';
 
   @override
-  String get phoneLabel => 'Phone Number';
+  String get fieldRequired => 'This field is required';
 
   @override
-  String get phoneError => 'Please enter a valid phone number';
+  String get phoneInvalid => 'Invalid number (minimum 8 digits)';
 
   @override
-  String get registerButton => 'Register & Continue';
+  String get departure => 'Departure';
 
   @override
-  String get createOrderTitle => 'New Transport Request';
+  String get destination => 'Destination';
 
   @override
-  String get locationLabel => 'Destination Location';
+  String get vehicleType => 'Vehicle Type';
 
   @override
-  String get locationError => 'Please enter location';
+  String get car => 'Car';
 
   @override
-  String get vehicleLabel => 'Vehicle Type';
+  String get airplane => 'Airplane';
 
   @override
-  String get weightLabel => 'Weight (kg)';
+  String get weight => 'Package Weight (kg)';
 
   @override
-  String get calculatedPrice => 'Estimated Price';
+  String get weightInvalid => 'Enter a valid weight';
 
   @override
-  String get currency => 'MRU';
+  String get estimatedPrice => 'Estimated Price';
 
   @override
-  String get placeOrderButton => 'Submit Request';
+  String get confirmOrder => 'Confirm Order';
 
   @override
-  String get adminPanelButton => 'Admin Panel';
+  String get editOrder => 'Edit';
 
   @override
-  String get orderSuccess => 'Order submitted successfully!';
+  String get adminPanel => 'Admin Panel';
 
   @override
-  String get adminTitle => 'All Cargo Orders';
+  String get noOrders => 'No orders yet';
 
   @override
-  String get deleteTooltip => 'Delete order';
+  String get call => 'Call';
 
   @override
-  String get callTooltip => 'Call client';
+  String get delete => 'Delete';
 
   @override
-  String get noOrders => 'No cargo requests placed yet.';
+  String get updateStatus => 'Update Status';
 
   @override
-  String weightDisplay(num weight) {
-    final intl.NumberFormat weightNumberFormat =
-        intl.NumberFormat.decimalPattern(localeName);
-    final String weightString = weightNumberFormat.format(weight);
-
-    return '$weightString kg';
-  }
+  String get statusPending => 'Pending';
 
   @override
-  String clientName(String name) {
-    return 'Client: $name';
-  }
+  String get statusInProgress => 'In Progress';
 
   @override
-  String clientPhone(String phone) {
-    return 'Phone: $phone';
-  }
+  String get statusDelivered => 'Delivered';
+
+  @override
+  String get orderConfirmed => 'Order confirmed successfully!';
+
+  @override
+  String get orderDeleted => 'Order deleted';
+
+  @override
+  String get errorMessage => 'An error occurred';
+
+  @override
+  String get selectCity => 'Select a city';
+
+  @override
+  String get sameCityError => 'Departure and destination must be different';
+
+  @override
+  String get register => 'Registration';
+
+  @override
+  String get newOrder => 'New Order';
+
+  @override
+  String get client => 'Client';
+
+  @override
+  String get trip => 'Trip';
+
+  @override
+  String get vehicle => 'Vehicle';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get confirmDelete => 'Confirm Deletion';
+
+  @override
+  String get confirmDeleteMessage =>
+      'Are you sure you want to delete this order?';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get chooseStatus => 'Choose a status';
+
+  @override
+  String get mru => 'MRU';
+
+  @override
+  String get kg => 'kg';
+
+  @override
+  String get km => 'km';
 }

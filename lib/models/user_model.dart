@@ -1,23 +1,22 @@
+// Modèle représentant un utilisateur (client ou admin)
+// Contient uniquement le nom et le numéro de téléphone
+
 class UserModel {
   final String name;
   final String phone;
 
-  UserModel({
+  const UserModel({
     required this.name,
     required this.phone,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'phone': phone,
-    };
-  }
+  // Vérifie si l'utilisateur est admin
+  bool get isAdmin => name == 'admin' && phone == '00000000';
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      name: json['name'] ?? '',
-      phone: json['phone'] ?? '',
-    );
-  }
+  Map<String, dynamic> toMap() => {'name': name, 'phone': phone};
+
+  factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
+    name: map['name'] as String? ?? '',
+    phone: map['phone'] as String? ?? '',
+  );
 }
