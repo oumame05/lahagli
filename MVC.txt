@@ -1,0 +1,24 @@
+lib/
+├── main.dart
+│
+├── models/
+│   ├── user_model.dart       ← الاسم + الهاتف
+│   └── order_model.dart      ← المكان + المركبة + الوزن + السعر
+│
+├── views/
+│   ├── register_screen.dart  ← الاسم + الهاتف
+│   ├── order_screen.dart     ← نموذج الطلب كامل + السعر في نفس الصفحة
+│   └── admin_screen.dart     ← قائمة الطلبات + حذف + اتصال
+│
+├── controllers/
+│   └── order_provider.dart   ← كل المنطق هنا (Provider)
+│
+├── services/
+│   └── firebase_service.dart ← حفظ وجلب وحذف من Firestore
+│
+├── l10n/
+│   ├── app_fr.arb
+│   └── app_en.arb
+│
+└── utils/
+    └── constants.dart      

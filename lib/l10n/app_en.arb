@@ -1,0 +1,50 @@
+{
+  "@@locale": "en",
+  "appTitle": "Lahagli Cargo",
+  "registerTitle": "Create Profile",
+  "registerSubtitle": "Enter your name and phone number to start ordering transport services.",
+  "nameLabel": "Full Name",
+  "nameError": "Please enter your name",
+  "phoneLabel": "Phone Number",
+  "phoneError": "Please enter a valid phone number",
+  "registerButton": "Register & Continue",
+  "createOrderTitle": "New Transport Request",
+  "locationLabel": "Destination Location",
+  "locationError": "Please enter location",
+  "vehicleLabel": "Vehicle Type",
+  "weightLabel": "Weight (kg)",
+  "calculatedPrice": "Estimated Price",
+  "currency": "MRU",
+  "placeOrderButton": "Submit Request",
+  "adminPanelButton": "Admin Panel",
+  "orderSuccess": "Order submitted successfully!",
+  "adminTitle": "All Cargo Orders",
+  "deleteTooltip": "Delete order",
+  "callTooltip": "Call client",
+  "noOrders": "No cargo requests placed yet.",
+  "weightDisplay": "{weight} kg",
+  "@weightDisplay": {
+    "placeholders": {
+      "weight": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "clientName": "Client: {name}",
+  "@clientName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "clientPhone": "Phone: {phone}",
+  "@clientPhone": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  }
+}
