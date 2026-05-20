@@ -14,7 +14,7 @@ lib/
 │   └── order_provider.dart   ← كل المنطق هنا (Provider)
 │
 ├── services/
-│   └── firebase_service.dart ← حفظ وجلب وحذف من Firestore
+│   └── firebase_service.dart 
 │
 ├── l10n/
 │   ├── app_fr.arb
